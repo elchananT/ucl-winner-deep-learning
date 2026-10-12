@@ -1,0 +1,18 @@
+# environments
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.DS_Store
+
+# data: raw caches and processed tables are rebuilt by `make data`
+data/raw/
+data/processed/
+!data/README.md
+
+# scratch
+*.log
+build/
+dist/
