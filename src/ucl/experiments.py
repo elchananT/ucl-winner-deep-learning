@@ -47,6 +47,14 @@ def load_json(name: str):
     return json.loads(path.read_text())
 
 
+def record_runtime(key: str, seconds: float) -> None:
+    """Merge one wall-clock measurement into ``reports/results/runtimes.json``."""
+    path = RESULTS_DIR / "runtimes.json"
+    current = json.loads(path.read_text()) if path.exists() else {}
+    current[key] = round(float(seconds), 1)
+    save_json(current, "runtimes.json")
+
+
 @dataclass
 class Dataset:
     matches: pd.DataFrame
@@ -174,7 +182,7 @@ def mlp_search_space(n_trials: int, seed: int = SEED) -> list[MLPConfig]:
             MLPConfig(
                 use_embeddings=True,
                 embedding_dim=int(rng.choice([4, 8, 16])),
-                hidden=tuple(rng.choice([[16], [32], [32, 16], [64, 32]]).tolist()),
+                hidden=((16,), (32,), (32, 16), (64, 32))[int(rng.integers(0, 4))],
                 dropout=float(rng.choice([0.1, 0.3, 0.5])),
                 l2=float(rng.choice([1e-4, 1e-3, 1e-2])),
                 lr=float(rng.choice([1e-3, 3e-3])),
@@ -241,6 +249,7 @@ __all__ = [
     "load_dataset",
     "load_json",
     "metrics_table",
+    "record_runtime",
     "save_json",
     "select_elo_params",
     "tune_gbm",

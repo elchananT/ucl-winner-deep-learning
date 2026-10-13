@@ -153,6 +153,12 @@ def test_cross_source_parsers_agree_on_overlapping_seasons():
         d["away"] = [names.canonical_team(n, c) for n, c in zip(d["away"], d["away_country"], strict=True)]
         d["key"] = d["home"] + ">" + d["away"] + "@" + d["date"].astype(str)
     both = fc.merge(of, on="key", suffixes=("_fc", "_of"))
-    assert len(both) >= 0.97 * len(fc)  # the rest are finals listed with the teams swapped
     assert (both["home_goals_fc"] == both["home_goals_of"]).all()
     assert (both["away_goals_fc"] == both["away_goals_of"]).all()
+    # The only fixtures not matched are finals, which the two files list with the teams swapped.
+    rest = fc[~fc["key"].isin(both["key"])].copy()
+    assert (rest["round"] == "Final").all()
+    rest["swapped"] = rest["away"] + ">" + rest["home"] + "@" + rest["date"].astype(str)
+    mirrored = rest.merge(of, left_on="swapped", right_on="key", suffixes=("_fc", "_of"))
+    assert len(both) + len(mirrored) == len(fc) == len(of)
+    assert (mirrored["home_goals_fc"] == mirrored["away_goals_of"]).all()

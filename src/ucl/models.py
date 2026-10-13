@@ -132,7 +132,9 @@ def _keras():
     os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
     os.environ.setdefault("TF_ENABLE_ONEDNN_OPTS", "0")
     import keras
+    import tensorflow as tf
 
+    tf.config.experimental.enable_op_determinism()  # identical results for identical seeds
     return keras
 
 
