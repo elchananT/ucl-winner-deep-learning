@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install --no-deps -e .
+      - name: Lint
+        run: |
+          ruff check .
+          ruff format --check .
+      - name: Download data (open CC0 sources, pinned commits)
+        run: python -m ucl.data
+      - name: Test
+        run: pytest
+
+  notebooks:
+    # Re-executes every notebook end to end (a few minutes); manual trigger only.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: |
+          pip install -r requirements.txt
+          pip install --no-deps -e .
+          python -m ucl.data
+      - run: jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=3600 notebooks/*.ipynb
