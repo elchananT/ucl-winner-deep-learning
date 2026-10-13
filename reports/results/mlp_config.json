@@ -1,0 +1,33 @@
+{
+  "batch_size": 128,
+  "dropout": 0.5,
+  "embedding_dim": 16,
+  "features": [
+    "elo_diff",
+    "elo_h",
+    "elo_a",
+    "neutral",
+    "is_knockout",
+    "is_second_leg",
+    "is_final",
+    "form_pts_h",
+    "form_pts_a",
+    "form_gd_h",
+    "form_gd_a",
+    "att_h",
+    "att_a",
+    "dfn_h",
+    "dfn_a",
+    "log_n_h",
+    "log_n_a"
+  ],
+  "hidden": [
+    16
+  ],
+  "l2": 0.01,
+  "lr": 0.003,
+  "max_epochs": 200,
+  "min_team_matches": 5,
+  "patience": 15,
+  "use_embeddings": true
+}

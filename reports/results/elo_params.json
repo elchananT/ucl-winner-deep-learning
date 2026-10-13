@@ -1,0 +1,10 @@
+{
+  "best": {
+    "country_prior_weight": 0.5,
+    "home_advantage": 60.0,
+    "k": 15.0,
+    "season_regression": 0.0
+  },
+  "best_val_log_loss": 0.9447994516510849,
+  "grid_size": 60
+}
